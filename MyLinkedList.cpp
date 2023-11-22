@@ -91,7 +91,7 @@ void MyLinkedList::insertFirst(int data)
 }
 
 // Inserta un elemento al final de la lista, tiene una complejidad de O(1)
-void MyLinkedList::insertLast(int data)
+void MyLinkedList::insertLast(string key, int data)
 {
     if (isEmpty())
     {
@@ -99,13 +99,15 @@ void MyLinkedList::insertLast(int data)
     }
     else
     {
-        this->tail->next = new MyNodoLL(data, nullptr);
+        this->tail->next = new MyNodoLL(data, nullptr, key);
         this->tail = this->tail->next;
         this->size++;
     }
 }
 
 // Inserta un elemento en la posición indicada, tiene una complejidad de O(n) ya que tiene que recorrer la lista hasta llegar a la posición indicada para insertar el elemento
+
+/*
 void MyLinkedList::insertAt(int pos, int data)
 {
     if (pos == 0)
@@ -131,6 +133,7 @@ void MyLinkedList::insertAt(int pos, int data)
         throw invalid_argument("No puedes insertar un número en una posición no existente en tu lista");
     }
 }
+*/
 
 // Elimina el ultimo elemento de la lista, tiene una complejidad de O(n) ya que tiene que recorrer toda la lista hasta llegar al ultimo elemento
 void MyLinkedList::removeLast()

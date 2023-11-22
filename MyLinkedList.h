@@ -8,24 +8,20 @@ using namespace std;
 struct MyNodoLL
 {
     int data;
-    string dataS;
     string key;
-    MyNodoLL *next = nullptr;
+    MyNodoLL *next;
 
+    MyNodoLL(int data, MyNodoLL *next, string key)
+    {
+        this->data = data;
+        this->next = next;
+        this->key = key;
+    }
     MyNodoLL(int data, MyNodoLL *next)
     {
         this->data = data;
         this->next = next;
     }
-
-    MyNodoLL(string dataS, string key, MyNodoLL *next)
-    {
-        this->dataS = dataS;
-        this->key = key;
-        this->next = next;
-    }
-
-    MyNodoLL(int data) : data(data), key(""), next(nullptr) {}
 };
 
 class MyLinkedList
@@ -43,7 +39,7 @@ public:
     int getAt(int pos);
     void setAt(int pos, int data);
     void insertFirst(int data);
-    void insertLast(int data);
+    void insertLast(string key, int data);
     void insertAt(int pos, int data);
     void removeFirst();
     void removeLast();

@@ -7,7 +7,6 @@ int MyHashTable::getPos(string key)
     size_t hashC = hash<string>{}(key);
     int hashCode = static_cast<int>(hashC);
     return abs(hashCode) % sizeA;
-    cout << "hashcode: " << hashCode << endl;
 }
 
 MyHashTable::MyHashTable()
@@ -30,7 +29,7 @@ bool MyHashTable::isEmpty()
 void MyHashTable::put(string key, int value)
 {
     int pos = getPos(key);
-    this->tabla[pos].insertLast(value);
+    this->tabla[pos].insertLast(key, value);
     this->size++;
 }
 
@@ -39,17 +38,13 @@ int MyHashTable::get(string key)
     int pos = getPos(key);
 
     // Check if the key exists in the hash table at the specified position
-    if (this->tabla[pos].isEmpty())
-    {
+    if(this->tabla[pos].isEmpty()){
         return -1; // Key not found, return -1
     }
-    cout << "Prueba" << endl;
     // Iterate through the linked list and return the value if the key matches
     MyNodoLL *current = this->tabla[pos].head;
-    while (current != nullptr)
-    {
-        if (key == current->dataS)
-        {
+    while (current != nullptr){
+        if (key == current->key){
             return this->tabla[pos].last();
         }
         current = current->next;
