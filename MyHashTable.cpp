@@ -1,76 +1,98 @@
 #include "MyHashTable.h"
-#include <functional>
-#include <cmath>
-#include <string>
-#include <list>
-#include <iostream>
-
 
 using namespace std;
 
-int MyHashTable::getPos(string key){
-    size_t hashC=hash<string>{}(key);
-    int hashCode=static_cast<int>(hashC);
-    return abs(hashCode)%this->sizeA;
+int MyHashTable::getPos(string key)
+{
+    size_t hashC = hash<string>{}(key);
+    int hashCode = static_cast<int>(hashC);
+    return abs(hashCode) % sizeA;
     cout << "hashcode: " << hashCode << endl;
 }
 
-MyHashTable::MyHashTable(){
-    this-> size= 0;
-    this-> sizeA= 11;
-    this->tabla = new list<int>[this->sizeA];
+MyHashTable::MyHashTable()
+{
+    this->size = 0;
+    this->sizeA = 11;
+    this->tabla = new MyLinkedList[this->sizeA];
 }
 
-MyHashTable::~MyHashTable(){
+MyHashTable::~MyHashTable()
+{
     delete[] this->tabla;
 }
 
-bool MyHashTable::isEmpty(){
-    return this->size==0;
+bool MyHashTable::isEmpty()
+{
+    return this->size == 0;
 }
 
-void MyHashTable::rehashing(){
-    int sizeA2=this->sizeA*2;
-    list<int> *tabla2 = new list<int>[sizeA2];
-    for(int i=0;i<this->sizeA;i++){
-        for(int j=0;j<this->tabla[i].size();j++){
-            int pos=getPos(to_string(this->tabla[i].front()));
-            tabla2[pos].push_back(this->tabla[i].front());
-            this->tabla[i].pop_front();
-        }
-    }
-    this->sizeA=sizeA2;
-    delete[] this->tabla;
-    this->tabla=tabla2;
-}
-
-void MyHashTable::put(string key, int value){
-    if(this->size/this->sizeA<=0.75){
-        rehashing();
-    }
-    cout << this->sizeA << endl;
-    int pos=getPos(key);
-    cout << "pos: " << pos << endl;
-    this->tabla[pos].push_back(value);
-    this->size++;
-    cout << "size: " << this->size << endl;
-}
-
-int MyHashTable::get(string key){
+void MyHashTable::put(string key, int value)
+{
     int pos = getPos(key);
-    for(int i = 0; i < this->tabla[pos].size(); i++){
-        cout << this->tabla[pos].front() << endl;
-        try {
-            int value = this->tabla[pos].front();
-            if (value == stoi(key)) {
-                return value;
-            }
-        } catch (const std::invalid_argument& e) {
-            // Handle the invalid argument exception here
-            // You can log an error message or perform any necessary error handling
-        }
-        this->tabla[pos].pop_front();
+    this->tabla[pos].insertLast(value);
+    this->size++;
+}
+
+int MyHashTable::get(string key)
+{
+    int pos = getPos(key);
+
+    // Check if the key exists in the hash table at the specified position
+    if (this->tabla[pos].isEmpty())
+    {
+        return -1; // Key not found, return -1
     }
+    cout << "Prueba" << endl;
+    // Iterate through the linked list and return the value if the key matches
+    MyNodoLL *current = this->tabla[pos].head;
+    while (current != nullptr)
+    {
+        if (key == current->dataS)
+        {
+            return this->tabla[pos].last();
+        }
+        current = current->next;
+    }
+
+    // Key not found in the linked list
     return -1;
 }
 
+void MyHashTable::remove(string key)
+{
+    int pos = getPos(key);
+    MyNodoLL *current = this->tabla[pos].head;
+    while (current != nullptr)
+    {
+        if (current->key == key)
+        {
+            break;
+        }
+        current = current->next;
+    }
+    // Check if the key exists in the hash table at the specified position
+    if (this->tabla[pos].isEmpty())
+    {
+        return; // Key not found, do nothing
+    }
+
+    this->tabla[pos].removeLast();
+    this->size--;
+}
+
+void MyHashTable::rehashing()
+{
+    MyLinkedList *aux = this->tabla;
+    this->sizeA = this->sizeA * 2 + 1;
+    this->tabla = new MyLinkedList[this->sizeA];
+    for (int i = 0; i < this->sizeA / 2; i++)
+    {
+        while (!aux[i].isEmpty())
+        {
+            this->put("a", aux[i].last());
+            aux[i].removeLast();
+        }
+    }
+    delete[] aux;
+}
